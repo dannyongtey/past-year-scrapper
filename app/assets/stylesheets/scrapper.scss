@@ -1,0 +1,59 @@
+// Place all the styles related to the scrapper controller here.
+// They will automatically be included in application.css.
+// You can use Sass (SCSS) here: http://sass-lang.com/
+
+@import "bootstrap-sprockets";
+@import "bootstrap";
+
+body {
+	height: 100%;
+}
+
+.header {
+	position: fixed;
+	background-color: rgba(0,0,0,0.5);
+	width: 100%;
+	height: 10vh;
+}
+
+.header .logo-container {
+	box-sizing: border-box;
+	padding-left: 20px;
+	position: relative;
+	height:100%;
+}
+
+.header .logo-container a{
+	color:#ffffff;
+	text-transform: uppercase;
+	font-size: 1.4em;
+	text-decoration: none;
+	position: absolute;
+	top: 50%;
+	transform: translateY(-50%);
+}
+
+.footer {
+	position: absolute;
+	bottom: 0;
+	width: 100%;
+	height: 50px;
+
+}
+
+.footer .footer-container {
+	padding-left: 20px;
+}
+
+.footer .footer-container p {
+
+}
+
+
+.wrapper {
+	padding-top: 15vh;
+}
+
+.full-width {
+	width: 100%;
+}
