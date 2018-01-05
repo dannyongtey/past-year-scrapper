@@ -21,5 +21,15 @@
 	<%= link_to "Download all", "/download?#{query}"  %></td>
 	</tr>
 <% end %>
+
+
 </table>
+<div class = "col-md-offset-10 col-md-2">
+	<% all_subject_hash = {} %>
+	<% @subject_hash.each do |subject_code, name_and_id| %>
+		<% all_subject_hash[name_and_id[:name]] = name_and_id[:ids] %>
+	<% end %>
+	<% query = all_subject_hash.to_query %>
+	<%= link_to "Download everything", "/download?#{query}"  %>
+</div>
 </div>
