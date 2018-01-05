@@ -27,7 +27,6 @@ gem 'sdoc', '~> 0.4.0', group: :doc
 gem 'nokogiri'
 gem 'mechanize'
 gem 'rubyzip'
-#gem 'zip'
 gem 'zip-zip'
 
 # Use ActiveModel has_secure_password
