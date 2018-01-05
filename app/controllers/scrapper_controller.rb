@@ -1,5 +1,5 @@
 class ScrapperController < ApplicationController
-
+	before_action :set_agent, only: [:scrape, :fetch, :singledl] 
 	def index
 	end
 
@@ -7,20 +7,15 @@ class ScrapperController < ApplicationController
 		#REGEX pattern for acceptable subject codes
 		subjects = scan_subjects(subject_params)
 		if subjects
-
-			agent = Mechanize.new
-			agent.user_agent_alias = "Mac Safari" 
-			update_or_initialize_cookie(agent)
-			agent.cookie_jar.load("cookies.yaml")
 			@subject_hash = {}
 			#Extract ID of each subject
 			subjects.each do |subject_code|
-					agent.get(url_for_subject(subject_code))
-					subject_name = remove_linktext_from_agent(text: subject_code, agent: agent)
+					@agent.get(url_for_subject(subject_code))
+					subject_name = remove_linktext_from_agent(text: subject_code, agent: @agent)
 					@subject_hash[subject_code] = {}
 					@subject_hash[subject_code][:name] = subject_name
 					@subject_hash[subject_code][:ids] = [] 
-					links = agent.page.links_with(text: "Fulltext View")
+					links = @agent.page.links_with(text: "Fulltext View")
 					#Insert each ID of the subject into hash
 					links.each do |link|
 						@subject_hash[subject_code][:ids] <<  link.uri.to_s.split('=').last
@@ -36,13 +31,49 @@ class ScrapperController < ApplicationController
 
 	end
 
+	def singledl
+
+		id = subject_params[:sub_id]
+		dl_link = "http://vlibcm.mmu.edu.my.proxyvlib.mmu.edu.my//xzamp/gxzam.php?action=#{id}.pdf"
+		data = @agent.post(dl_link).body
+		send_data data, filename: "#{id}.pdf", type: "application/pdf", disposition: "attachment"
+
+	end
+
 	def fetch
+		
 		#Sample link: http://vlibcm.mmu.edu.my.proxyvlib.mmu.edu.my//xzamp/gxzam.php?action=35379.pdf
+	
+		subject_params = filter_params(params)
+
+		#Maybe use back scan_subject function
+		t = Tempfile.new("temp-#{SecureRandom.hex}")
+		Zip::OutputStream.open(t.path) do |zos|
+			subject_params.each do |subject, ids|
+				ids.each do |id|
+					dl_link = "http://vlibcm.mmu.edu.my.proxyvlib.mmu.edu.my//xzamp/gxzam.php?action=#{id}.pdf"
+					data = @agent.post(dl_link).body
+					zos.put_next_entry("#{subject}/#{id}.pdf")
+					zos.print(data)
+				end
+			end
+		end
+		send_file t.path, type: "application/zip", disposition: "attachment", filename: "past-year.zip"
+		t.close
+		
 	end
 
 	private
 	def subject_params
 		params.permit(:sub_id)
+	end
+
+
+	def set_agent
+			@agent = Mechanize.new
+			@agent.user_agent_alias = "Mac Safari" 
+			update_or_initialize_cookie(@agent)
+			@agent.cookie_jar.load("cookies.yaml")
 	end
 
 	def scan_subjects (parameter)
@@ -91,5 +122,14 @@ class ScrapperController < ApplicationController
 		return nil if mod_text.nil?
 		mod_text.slice! (text)
 		mod_text.to_sym
+	end
+
+	def filter_params(parameter)
+		filtered_params = {}
+		parameter.each do |key, value|
+			break if key == "controller" || key == "action"
+			filtered_params[key.to_sym] = value
+		end
+		filtered_params
 	end
 end

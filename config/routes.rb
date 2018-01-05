@@ -3,7 +3,8 @@ Rails.application.routes.draw do
   # See how all your routes lay out with "rake routes".
   root "scrapper#index"
   post "/", to: "scrapper#scrape"
-  get "/:id", to: "scrapper#fetch"
+  get "/download", to: "scrapper#fetch"
+  get "/:sub_id", to: "scrapper#singledl"
   # You can have the root of your site routed with "root"
   # root 'welcome#index'
 
