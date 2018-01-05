@@ -20,8 +20,9 @@ class ScrapperController < ApplicationController
 					links.each do |link|
 						@subject_hash[subject_code][:ids] <<  link.uri.to_s.split('=').last
 					end
+
 			end
-			debugger
+		
 
 		else
 			# Failure code
@@ -44,12 +45,12 @@ class ScrapperController < ApplicationController
 		
 		#Sample link: http://vlibcm.mmu.edu.my.proxyvlib.mmu.edu.my//xzamp/gxzam.php?action=35379.pdf
 	
-		subject_params = filter_params(params)
+		subject_hash = filter_params(params)
 
 		#Maybe use back scan_subject function
 		t = Tempfile.new("temp-#{SecureRandom.hex}")
 		Zip::OutputStream.open(t.path) do |zos|
-			subject_params.each do |subject, ids|
+			subject_hash.each do |subject, ids|
 				ids.each do |id|
 					dl_link = "http://vlibcm.mmu.edu.my.proxyvlib.mmu.edu.my//xzamp/gxzam.php?action=#{id}.pdf"
 					data = @agent.post(dl_link).body

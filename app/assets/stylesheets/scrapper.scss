@@ -57,3 +57,25 @@ body {
 .full-width {
 	width: 100%;
 }
+
+table {
+	border: 1px solid rgba(0,0,0,0.5);
+	text-align: center;
+}
+
+th{
+	border-bottom:0.5px solid rgba(0,0,0,0.3);
+	font-size: 1.3em;
+	padding-right: 10px;
+	text-align: center;
+}
+
+td {
+	font-size: 1.2em;
+	padding: 10px 0;
+	border-right: 0.3px solid black;
+}
+
+
+
+tr:nth-child(even) {background-color: #f2f2f2;}

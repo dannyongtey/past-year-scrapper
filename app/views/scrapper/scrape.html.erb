@@ -1,0 +1,25 @@
+<div class = "row">
+<table class= "col-md-12">
+<tr>
+	<th>Subject Code</th>
+	<th>Subject Name</th>
+	<th>Past year papers</th>
+	<th>Download all</th>
+</tr>
+<% @subject_hash.each do |subject_code, name_and_id| %>
+	<tr>
+	<td><%= subject_code %></td>
+	<td><%= name_and_id[:name] %></td>
+	<td>
+	<% name_and_id[:ids].each do |id| %>
+			<%= link_to id, "/#{id}", data: {turbolinks: false}%> |
+	<% end %>
+	(<%= name_and_id[:ids].count %> papers found.)
+	</td>
+	<td>
+	<% query = {name_and_id[:name] => name_and_id[:ids]}.to_query %>
+	<%= link_to "Download all", "/download?#{query}"  %></td>
+	</tr>
+<% end %>
+</table>
+</div>
