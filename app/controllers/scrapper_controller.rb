@@ -1,6 +1,7 @@
 class ScrapperController < ApplicationController
 	before_action :set_agent, only: [:scrape, :fetch, :singledl] 
 	def index
+		debugger
 	end
 
 	def scrape
