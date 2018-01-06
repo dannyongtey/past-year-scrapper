@@ -28,6 +28,7 @@ gem 'nokogiri'
 gem 'mechanize'
 gem 'rubyzip'
 gem 'zip-zip'
+gem 'parallel'
 
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'

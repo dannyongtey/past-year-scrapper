@@ -50,18 +50,31 @@ class ScrapperController < ApplicationController
 		#Maybe use back scan_subject function
 		t = Tempfile.new("temp-#{SecureRandom.hex}")
 		Zip::OutputStream.open(t.path) do |zos|
+			
 			subject_hash.each do |subject, ids|
-				ids.each do |id|
+			  datas = Parallel.map(ids, in_processes: ids.count) do |id|
+				#ids.each do |id|
+				
+					
 					dl_link = "http://vlibcm.mmu.edu.my.proxyvlib.mmu.edu.my//xzamp/gxzam.php?action=#{id}.pdf"
-					data = @agent.post(dl_link).body
-					zos.put_next_entry("#{subject}/#{id}.pdf")
-					zos.print(data)
-				end
+					temp_agent = @agent.dup
+					
+					data = temp_agent.post(dl_link).body
+		
+					data
+					end
+					debugger	
+					datas.zip(ids).each do |data, id|
+						zos.put_next_entry("#{subject}/#{id}.pdf")
+						zos.print(data)
+					end
+				
 			end
 		end
-		send_file t.path, type: "application/zip", disposition: "attachment", filename: "past-year.zip"
+		zip_data = File.read(t.path)
+		send_data zip_data, type: "application/zip", disposition: "attachment", filename: "past-year.zip"
 		t.close
-		
+		t.unlink
 	end
 
 	private
@@ -99,6 +112,7 @@ class ScrapperController < ApplicationController
 	def update_or_initialize_cookie(agent)
 		stud_id = ENV["student_id"]
 		stud_pswd = ENV["student_password"]
+
 		test_subject = "TSN 1101"
 		if File.exist?("cookies.yaml")
 			agent.cookie_jar.load("cookies.yaml")
@@ -111,13 +125,13 @@ class ScrapperController < ApplicationController
 			agent.page.form.pass = stud_pswd
 			agent.page.form.submit
 		end
-
-		agent.cookie_jar.save("cookies.yaml")
-
+		agent.cookie_jar.save("cookies.yaml", session: true)
+		
 	end	
 
 	def remove_linktext_from_agent(text: "", agent:)
 		return nil if agent.nil?
+		
 		#Require exception handling
 		mod_text = agent.page.link_with(text: /#{text}/).text
 		return nil if mod_text.nil?
@@ -128,7 +142,7 @@ class ScrapperController < ApplicationController
 	def filter_params(parameter)
 		filtered_params = {}
 		parameter.each do |key, value|
-			break if key == "controller" || key == "action"
+			break if key == "controller" || key == "action" || key == "data"
 			filtered_params[key.to_sym] = value
 		end
 		filtered_params

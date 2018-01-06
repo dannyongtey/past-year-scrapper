@@ -17,7 +17,7 @@
 	(<%= name_and_id[:ids].count %> papers found.)
 	</td>
 	<td>
-	<% query = {name_and_id[:name] => name_and_id[:ids]}.to_query %>
+	<% query = {name_and_id[:name] => name_and_id[:ids], data: {turbolinks: false}}.to_query %>
 	<%= link_to "Download all", "/download?#{query}"  %></td>
 	</tr>
 <% end %>
@@ -30,6 +30,6 @@
 		<% all_subject_hash[name_and_id[:name]] = name_and_id[:ids] %>
 	<% end %>
 	<% query = all_subject_hash.to_query %>
-	<%= link_to "Download everything", "/download?#{query}"  %>
+	<%= link_to "Download everything", "/download?#{query}", data: {turbolinks: false}  %>
 </div>
 </div>

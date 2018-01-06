@@ -105,6 +105,7 @@ GEM
     nokogiri (1.8.1)
       mini_portile2 (~> 2.3.0)
     ntlm-http (0.1.1)
+    parallel (1.12.1)
     pg (0.21.0)
     rack (2.0.3)
     rack-test (0.6.3)
@@ -197,6 +198,7 @@ DEPENDENCIES
   jquery-rails
   mechanize
   nokogiri
+  parallel
   pg (~> 0.18)
   rails
   rubyzip
