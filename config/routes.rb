@@ -5,6 +5,7 @@ Rails.application.routes.draw do
   post "/", to: "scrapper#scrape"
   get "/download", to: "scrapper#fetch"
   get "/:sub_id", to: "scrapper#singledl"
+  
   # You can have the root of your site routed with "root"
   # root 'welcome#index'
 

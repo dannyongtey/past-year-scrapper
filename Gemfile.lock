@@ -58,6 +58,11 @@ GEM
     concurrent-ruby (1.0.5)
     crass (1.0.3)
     debug_inspector (0.0.3)
+    delayed_job (4.1.4)
+      activesupport (>= 3.0, < 5.2)
+    delayed_job_active_record (4.1.2)
+      activerecord (>= 3.0, < 5.2)
+      delayed_job (>= 3.0, < 5)
     domain_name (0.5.20170404)
       unf (>= 0.0.5, < 1.0.0)
     erubis (2.7.0)
@@ -194,6 +199,7 @@ DEPENDENCIES
   bootstrap-sass (= 3.3.6)
   byebug
   coffee-rails (~> 4.1.0)
+  delayed_job_active_record
   jbuilder (~> 2.0)
   jquery-rails
   mechanize

@@ -1,14 +1,18 @@
 class ScrapperController < ApplicationController
+	include SessionsHelper
 	before_action :set_agent, only: [:scrape, :fetch, :singledl] 
 	def index
-		debugger
+		#debugger
 	end
 
 	def scrape
 		#REGEX pattern for acceptable subject codes
+
 		subjects = scan_subjects(subject_params)
 		if subjects
+			@user = create_and_set_session
 			@subject_hash = {}
+			file_count = 0
 			#Extract ID of each subject
 			subjects.each do |subject_code|
 					@agent.get(url_for_subject(subject_code))
@@ -21,10 +25,12 @@ class ScrapperController < ApplicationController
 					links.each do |link|
 						@subject_hash[subject_code][:ids] <<  link.uri.to_s.split('=').last
 					end
-
+					file_count += links.count
 			end
-		
-
+			@user.update_attributes(count: file_count)
+			#Delayed::Job.enqueue(DownloadJob.new(session[:id], @subject_hash))
+			@user.delay.download(@agent, @subject_hash)
+			#debugger
 		else
 			# Failure code
 			flash[:danger] = "Error in input. Please follow the guidelines."
@@ -42,41 +48,48 @@ class ScrapperController < ApplicationController
 
 	end
 
-	def fetch
-		
-		#Sample link: http://vlibcm.mmu.edu.my.proxyvlib.mmu.edu.my//xzamp/gxzam.php?action=35379.pdf
-	
-		subject_hash = filter_params(params)
+	def check
+		user = User.find_by(session: session[:id])
+		if user.count == user.temp_files.count
+			flash[:success] = "All file downloaded!"
+		else
+			flash[:danger] = "Haven't finish"
+		end
+		redirect_to root_path
+	end
 
-		#Maybe use back scan_subject function
+	def fetch
+		debugger
+		#Sample link: http://vlibcm.mmu.edu.my.proxyvlib.mmu.edu.my//xzamp/gxzam.php?action=35379.pdf
+		#if session = session[:id]
+		user = User.find_by(session: params[:session])
+		#user = Session.find_by(session: session)
 		t = Tempfile.new("temp-#{SecureRandom.hex}")
 		Zip::OutputStream.open(t.path) do |zos|
-			
-			subject_hash.each do |subject, ids|
-			  datas = Parallel.map(ids, in_processes: ids.count) do |id|
-				#ids.each do |id|
-				
-					
-					dl_link = "http://vlibcm.mmu.edu.my.proxyvlib.mmu.edu.my//xzamp/gxzam.php?action=#{id}.pdf"
-					temp_agent = @agent.dup
-					
-					data = temp_agent.post(dl_link).body
-		
-					data
-					end
-					debugger	
-					datas.zip(ids).each do |data, id|
-						zos.put_next_entry("#{subject}/#{id}.pdf")
-						zos.print(data)
-					end
-				
+			params[:subject].each do |subject|
+				debugger
+				subject_files = user.temp_files.where("path LIKE ?", "%#{subject}%")
+				subject_files = subject_files.map(&:path)
+				subject_files.each do |file_path|
+					id = file_path.split("-")[2]
+					debugger
+					zos.put_next_entry("#{subject}/#{id}.pdf")
+					zos.print IO.read(file_path)
+				end
 			end
 		end
 		zip_data = File.read(t.path)
 		send_data zip_data, type: "application/zip", disposition: "attachment", filename: "past-year.zip"
 		t.close
 		t.unlink
+	#else
+		flash[:danger] = "Unauthorized access to file"
+		#redirect_to root_path
+	#end
 	end
+
+		
+	
 
 	private
 	def subject_params
@@ -140,12 +153,6 @@ class ScrapperController < ApplicationController
 		mod_text.to_sym
 	end
 
-	def filter_params(parameter)
-		filtered_params = {}
-		parameter.each do |key, value|
-			break if key == "controller" || key == "action" || key == "data"
-			filtered_params[key.to_sym] = value
-		end
-		filtered_params
-	end
+
+
 end

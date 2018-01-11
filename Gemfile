@@ -29,7 +29,8 @@ gem 'mechanize'
 gem 'rubyzip'
 gem 'zip-zip'
 gem 'parallel'
-gem 'delayed_job_active_record', '4.0.3'
+gem 'delayed_job_active_record'
+gem 'whenever'
 
 # Use ActiveModel has_secure_password
 # gem 'bcrypt', '~> 3.1.7'
