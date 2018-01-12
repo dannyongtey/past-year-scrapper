@@ -1,7 +1,6 @@
 class User < ApplicationRecord
 	has_many :temp_files, dependent: :destroy
-	scope :three_minutes_old, {where("created_at >= :3_minutes_ago", 3_minutes_ago: Time.now-3.minutes)}
-	scope :old_files, {temp_files.where("created_at >= :3_minutes_ago", 3_minutes_ago: Time.now-3.minutes)}
+	scope :three_minutes_old, ->{where("created_at <= :three_minutes_ago", three_minutes_ago: Time.now-3.minutes)}
 	
 	def download(agent, sub_hash)
 		#self.temp_files.create!(path: "huehue")
@@ -31,6 +30,16 @@ class User < ApplicationRecord
 		end
 		#self.temp_files.create(path: "haha")
 	end
+
+	def destroy_old_files
+		files = temp_files.where("created_at <= :three_minutes_ago", three_minutes_ago: Time.now-3.minutes)
+		files.each do |file|
+			File.delete(file.path) if File.exist?(file.path)
+			
+		end
+	end
+
+
 
 	def self.filter_params(parameter)
 		

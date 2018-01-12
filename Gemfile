@@ -30,7 +30,7 @@ gem 'rubyzip'
 gem 'zip-zip'
 gem 'parallel'
 gem 'delayed_job_active_record'
-gem 'whenever'
+gem 'whenever', require: false
 gem 'daemons'
 
 # Use ActiveModel has_secure_password
