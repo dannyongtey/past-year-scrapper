@@ -19,8 +19,5 @@
 
 # Learn more: http://github.com/javan/whenever
 every 2.minutes do
-	User.three_minutes_old.each do |user|
-		user.destroy_old_files
-		user.destroy
-	end
+	runner "User.destroy_old_user_and_files"
 end

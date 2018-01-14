@@ -18,7 +18,7 @@
 	</td>
 	<td>
 	<% query = [subject_code].to_query("subject") %>
-	<%= link_to "Download all", "/download?#{query}&session=#{@user.session}", data: {turbolinks: false}  %></td>
+	<%= link_to "Download all", "/download?#{query}&session=#{@user.session}", {data: {turbolinks: false}, style: "display: none;", class: "download"}  %></td>
 	</tr>
 <% end %>
 
@@ -31,6 +31,22 @@
 		<% all_subject_hash[:subject] <<  subject_code %>
 	<% end %>
 	<% query = all_subject_hash.to_query %>
-	<%= link_to "Download everything", "/download?#{query}&session=#{@user.session}", data: {turbolinks: false}  %>
+	<%= link_to "Download everything", "/download?#{query}&session=#{@user.session}", {data: {turbolinks: false}, style: "display: none;", class: "download"}  %>
 </div>
 </div>
+
+<div id = "polling" data-url = "/check?session=<%=@user.session %>"></div>
+<script type="text/javascript">
+	Poller = {
+		poll: function(){
+			setTimeout(function(){Poller.request.call()}, 3000);
+			console.log("Poll run");
+		},
+		request: function(){
+			$.get($("#polling").attr("data-url"));
+			console.log("request run");
+		}
+	}
+	Poller.poll.call();
+	console.log("Running");
+</script>

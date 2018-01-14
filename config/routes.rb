@@ -4,7 +4,9 @@ Rails.application.routes.draw do
   root "scrapper#index"
   post "/", to: "scrapper#scrape"
   get "/download", to: "scrapper#fetch"
+  get "/check", to: "scrapper#check"
   get "/:sub_id", to: "scrapper#singledl"
+
   
   # You can have the root of your site routed with "root"
   # root 'welcome#index'

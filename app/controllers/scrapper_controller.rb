@@ -29,7 +29,9 @@ class ScrapperController < ApplicationController
 			end
 			@user.update_attributes(count: file_count)
 			#Delayed::Job.enqueue(DownloadJob.new(session[:id], @subject_hash))
-			@user.delay.download(@agent, @subject_hash)
+			@user.add_to_queue(@subject_hash)
+
+			User.delay.download(@user.session)
 			#debugger
 		else
 			# Failure code
@@ -50,16 +52,22 @@ class ScrapperController < ApplicationController
 
 	def check
 		user = User.find_by(session: session[:id])
-		if user.count == user.temp_files.count
-			flash[:success] = "All file downloaded!"
-		else
-			flash[:danger] = "Haven't finish"
+		@done = false
+		@count = user.temp_files.all.map{|x| !!x.path }.count(true)
+
+		if user.count == @count
+			@done = true
 		end
-		redirect_to root_path
+		
+		respond_to do |format|
+			format.js {
+				render 'polling.js.erb'
+			}
+		end
 	end
 
 	def fetch
-		debugger
+		
 		#Sample link: http://vlibcm.mmu.edu.my.proxyvlib.mmu.edu.my//xzamp/gxzam.php?action=35379.pdf
 		#if session = session[:id]
 		user = User.find_by(session: params[:session])
@@ -67,12 +75,12 @@ class ScrapperController < ApplicationController
 		t = Tempfile.new("temp-#{SecureRandom.hex}")
 		Zip::OutputStream.open(t.path) do |zos|
 			params[:subject].each do |subject|
-				debugger
+				#debugger
 				subject_files = user.temp_files.where("path LIKE ?", "%#{subject}%")
 				subject_files = subject_files.map(&:path)
 				subject_files.each do |file_path|
 					id = file_path.split("-")[2]
-					debugger
+					#debugger
 					zos.put_next_entry("#{subject}/#{id}.pdf")
 					zos.print IO.read(file_path)
 				end

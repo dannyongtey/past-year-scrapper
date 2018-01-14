@@ -1,12 +1,13 @@
 <div class = "row">
 
 		<h1 class = "col-md-12">Enter Subject Code: </h1>
-		
+		<% value = "Enter subject code separated by commas, eg. TSN 1101, TCP 1101" %>
 		<div class = "form col-md-12 row">
 		<%= form_tag root_path do %>
-			<%= hinted_text_field_tag :sub_id, "Enter subject code separated by commas, eg. TSN 1101, TCP 1101", class: "full-width" %>
+			<%= hinted_text_field_tag :sub_id, "#{value}", class: "full-width" %>
 			<%= button_tag "Submit" %>
 		<% end %>
+
 		</div>
 	
 </div>

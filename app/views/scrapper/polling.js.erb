@@ -1,0 +1,7 @@
+if (<%= @done %>){
+	$(".download").show();
+}else{
+	Poller.poll();
+	
+	console.log(<%= @count%>)
+}
