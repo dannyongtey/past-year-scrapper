@@ -1,11 +1,11 @@
-##Past Year Scrapper
+## Past Year Scrapper
 
 Developed using Ruby on Rails, by using Mechanize for web scrapping, Rubyzip for zipping on-the-fly, Parallel for concurrent downloading (in the background).  
 App available for free under MIT Licence.
 
-####Current development status: BETA release with basic functionalities working. 
+#### Current development status: BETA release with basic functionalities working. 
 
-###Special features:
+### Special features:
 
 * Search and download past year papers from MMU's [Vlib](vlib.mmu.edu.my) online library!
 * Zip files on-the-fly feature
