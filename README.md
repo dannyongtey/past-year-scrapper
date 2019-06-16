@@ -1,9 +1,18 @@
+## Deprecation Notice
+This project has been deprecated. It was written when I first started to learn coding, hence the codebase and implementation is messy af, making recreating the project from scratch to be much feasible.
+
+I have decided to revamp this project with a cleaner codebase and faster performance using NodeJS. You may find it [here](https://github.com/dannyongtey/past-year-backend).
+
+You are still welcome to make changes to this project, even though I'm not maintaining it anymore. Currently the main scrapper has ceased to work and the project dependencies have vulnerabilities.
+
 ## Past Year Scrapper
 
 Developed using Ruby on Rails, by using Mechanize for web scrapping, Rubyzip for zipping on-the-fly, Parallel for concurrent downloading (in the background).  
 App available for free under MIT Licence.
 
-#### Current development status: BETA release with basic functionalities working. 
+<del>#### Current development status: BETA release with basic functionalities working. </del>
+
+#### Current development status: ABANDONED Codebase available for public use, however might need some tweaking to get it working again.
 
 ### Special features:
 
