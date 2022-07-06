@@ -57,7 +57,7 @@ GEM
       execjs
     coffee-script-source (1.12.2)
     concurrent-ruby (1.0.5)
-    crass (1.0.3)
+    crass (1.0.6)
     daemons (1.2.6)
     debug_inspector (0.0.3)
     delayed_job (4.1.4)
@@ -87,7 +87,7 @@ GEM
       railties (>= 3.1.0)
       turbolinks
     json (1.8.6)
-    loofah (2.1.1)
+    loofah (2.18.0)
       crass (~> 1.0.2)
       nokogiri (>= 1.5.9)
     mail (2.7.0)
@@ -135,8 +135,8 @@ GEM
     rails-dom-testing (2.0.3)
       activesupport (>= 4.2.0)
       nokogiri (>= 1.6)
-    rails-html-sanitizer (1.0.3)
-      loofah (~> 2.0)
+    rails-html-sanitizer (1.4.3)
+      loofah (~> 2.3)
     railties (5.0.6)
       actionpack (= 5.0.6)
       activesupport (= 5.0.6)
